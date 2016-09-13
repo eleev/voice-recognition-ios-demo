@@ -24,7 +24,6 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         super.viewDidLoad()
         
         microphoneButton.isEnabled = false
-        
         speechRecognizer.delegate = self
         
         SFSpeechRecognizer.requestAuthorization { (authStatus) in
@@ -68,12 +67,12 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     func startRecording() {
         
-        if recognitionTask != nil {  //1
+        if recognitionTask != nil {
             recognitionTask?.cancel()
             recognitionTask = nil
         }
         
-        let audioSession = AVAudioSession.sharedInstance()  //2
+        let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(AVAudioSessionCategoryRecord)
             try audioSession.setMode(AVAudioSessionModeMeasurement)
@@ -82,29 +81,29 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
             print("audioSession properties weren't set because of an error.")
         }
         
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()  //3
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         
         guard let inputNode = audioEngine.inputNode else {
             fatalError("Audio engine has no input node")
-        }  //4
+        }
         
         guard let recognitionRequest = recognitionRequest else {
             fatalError("Unable to create an SFSpeechAudioBufferRecognitionRequest object")
-        } //5
+        }
         
-        recognitionRequest.shouldReportPartialResults = true  //6
+        recognitionRequest.shouldReportPartialResults = true
         
-        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in  //7
+        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
             
-            var isFinal = false  //8
+            var isFinal = false
             
             if result != nil {
                 
-                self.textView.text = result?.bestTranscription.formattedString  //9
+                self.textView.text = result?.bestTranscription.formattedString
                 isFinal = (result?.isFinal)!
             }
             
-            if error != nil || isFinal {  //10
+            if error != nil || isFinal {
                 self.audioEngine.stop()
                 inputNode.removeTap(onBus: 0)
                 
@@ -115,12 +114,12 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
             }
         })
         
-        let recordingFormat = inputNode.outputFormat(forBus: 0)  //11
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
             self.recognitionRequest?.append(buffer)
         }
         
-        audioEngine.prepare()  //12
+        audioEngine.prepare()
         
         do {
             try audioEngine.start()
