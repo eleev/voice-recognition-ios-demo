@@ -159,6 +159,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         microphoneButton.isEnabled = false
         
         microphoneButton.setTitle("Start Recording", for: .normal)
+        timeRemaining.progress = 0.0
     }
     
     // MARK: Timer
@@ -170,7 +171,6 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         
         if timeRemaining.progress >= 1.0 {
             stopRecording()
-            timeRemaining.progress = 0.0
         }
         
     }
