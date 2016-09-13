@@ -11,6 +11,7 @@ import Speech
 
 class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     
+    @IBOutlet weak var timeRemaining: UIProgressView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var microphoneButton: UIButton!
     
@@ -19,6 +20,9 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+    
+    
+    private var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,11 +59,18 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     @IBAction func microphoneTapped(_ sender: AnyObject) {
         if audioEngine.isRunning {
-            audioEngine.stop()
-            recognitionRequest?.endAudio()
-            microphoneButton.isEnabled = false
-            microphoneButton.setTitle("Start Recording", for: .normal)
+            stopRecording()
         } else {
+            timer = Timer.scheduledTimer(timeInterval: 0.1,
+                                         target: self,
+                                         selector: #selector(ViewController.remainingTime),
+                                         userInfo: nil,
+                                         repeats: true)
+            // Swift 2.2 and objc
+            //            NSRunLoop.currentRunLoop().addTimer(self.timer!, forMode: NSRunLoopCommonModes)
+            // Swift 2.3 and 3.0
+            RunLoop.current.add(timer!, forMode: RunLoopMode.defaultRunLoopMode)
+            
             startRecording()
             microphoneButton.setTitle("Stop Recording", for: .normal)
         }
@@ -137,5 +148,30 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         } else {
             microphoneButton.isEnabled = false
         }
+    }
+    
+    func stopRecording() {
+        timer?.invalidate()
+        timer = nil
+        
+        audioEngine.stop()
+        recognitionRequest?.endAudio()
+        microphoneButton.isEnabled = false
+        
+        microphoneButton.setTitle("Start Recording", for: .normal)
+    }
+    
+    // MARK: Timer
+
+    
+    func remainingTime() {
+        print("progress: \(timeRemaining.progress)")
+        timeRemaining.progress += 1.0  / 600.0
+        
+        if timeRemaining.progress >= 1.0 {
+            stopRecording()
+            timeRemaining.progress = 0.0
+        }
+        
     }
 }
