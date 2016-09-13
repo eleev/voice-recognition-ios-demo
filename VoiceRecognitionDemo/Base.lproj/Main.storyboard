@@ -43,9 +43,13 @@
                                     <action selector="microphoneTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Miv-0u-Wyb"/>
                                 </connections>
                             </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ohU-DQ-X0v"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="CtM-HG-XED" firstAttribute="top" secondItem="ohU-DQ-X0v" secondAttribute="bottom" constant="29" id="0Jf-Fd-Ain"/>
+                            <constraint firstItem="ohU-DQ-X0v" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="1QU-ZK-Wul"/>
+                            <constraint firstItem="ohU-DQ-X0v" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="4Vt-yq-7Q8"/>
                             <constraint firstItem="wF6-O8-cvx" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BaS-Rv-Wyg"/>
                             <constraint firstItem="CtM-HG-XED" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="39" id="DUC-Aa-T81"/>
                             <constraint firstItem="RL2-YE-xML" firstAttribute="top" secondItem="CtM-HG-XED" secondAttribute="bottom" constant="36" id="SXB-Yy-Fma"/>
@@ -53,17 +57,19 @@
                             <constraint firstItem="CtM-HG-XED" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="YUD-XV-vgR"/>
                             <constraint firstAttribute="leadingMargin" secondItem="RL2-YE-xML" secondAttribute="leading" id="aeW-p6-z7J"/>
                             <constraint firstItem="RL2-YE-xML" firstAttribute="centerX" secondItem="CtM-HG-XED" secondAttribute="centerX" id="cL7-Q1-eyo"/>
+                            <constraint firstAttribute="trailing" secondItem="ohU-DQ-X0v" secondAttribute="trailing" id="mH6-6J-Ids"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wF6-O8-cvx" secondAttribute="bottom" constant="30" id="rMQ-yb-tCj"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="microphoneButton" destination="wF6-O8-cvx" id="V9V-fM-n1g"/>
                         <outlet property="textView" destination="RL2-YE-xML" id="WCI-r4-v5k"/>
+                        <outlet property="timeRemaining" destination="ohU-DQ-X0v" id="soX-a8-1CE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="136.80000000000001" y="138.98050974512745"/>
+            <point key="canvasLocation" x="135" y="138.38028169014083"/>
         </scene>
     </scenes>
 </document>
