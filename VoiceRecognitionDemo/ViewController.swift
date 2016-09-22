@@ -9,7 +9,7 @@
 import UIKit
 import Speech
 
-class ViewController: UIViewController, SFSpeechRecognizerDelegate {
+class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
     
     @IBOutlet weak var timeRemaining: UIProgressView!
     @IBOutlet weak var textView: UITextView!
@@ -60,6 +60,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
     @IBAction func microphoneTapped(_ sender: AnyObject) {
         if audioEngine.isRunning {
             stopRecording()
+            finishRecordingAudio(success: true)
         } else {
             timer = Timer.scheduledTimer(timeInterval: 0.1,
                                          target: self,
@@ -72,6 +73,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
             RunLoop.current.add(timer!, forMode: RunLoopMode.defaultRunLoopMode)
             
             startRecording()
+            startRecordingAudio()
             microphoneButton.setTitle("Stop Recording", for: .normal)
         }
     }
@@ -162,7 +164,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         timeRemaining.progress = 0.0
     }
     
-    // MARK: Timer
+    // MARK: Util
 
     
     func remainingTime() {
@@ -174,4 +176,57 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate {
         }
         
     }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentsDirectory = paths[0]
+        return documentsDirectory
+    }
+    
+    // MARK: Recording audio
+    
+    var audioRecorder:AVAudioRecorder?
+    
+    func startRecordingAudio() {
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("recordingVoiceRecognitionDemo.m4a")
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 24000,
+            AVNumberOfChannelsKey: 2,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder?.delegate = self
+            audioRecorder?.record()
+            
+//            recordButton.setTitle("Tap to Stop", for: .normal)
+        } catch {
+            finishRecordingAudio(success: false)
+        }
+    }
+    
+    func finishRecordingAudio(success: Bool) {
+        audioRecorder?.stop()
+        audioRecorder = nil
+        
+        if success {
+//            recordButton.setTitle("Tap to Re-record", for: .normal)
+        } else {
+//            recordButton.setTitle("Tap to Record", for: .normal)
+            // recording failed :(
+        }
+    }
+    
+    
+    // MARK: AVAudioRecordingDelegate 
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if !flag {
+            finishRecordingAudio(success: false)
+        }
+    }
+
 }
