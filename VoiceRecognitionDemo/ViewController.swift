@@ -26,6 +26,8 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        documentsDirectory()
         
         microphoneButton.isEnabled = false
         speechRecognizer.delegate = self
@@ -183,6 +185,13 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         return documentsDirectory
     }
     
+    func documentsDirectory() {
+        #if TARGET_IPHONE_SIMULATOR
+            // where are you?
+            print("Documents Directory: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last)")
+        #endif
+    }
+    
     // MARK: Recording audio
     
     var audioRecorder:AVAudioRecorder?
@@ -213,8 +222,10 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         audioRecorder = nil
         
         if success {
+            print("finishRecordingAudio: true")
 //            recordButton.setTitle("Tap to Re-record", for: .normal)
         } else {
+            print("finishRecordingAudio: false")
 //            recordButton.setTitle("Tap to Record", for: .normal)
             // recording failed :(
         }
