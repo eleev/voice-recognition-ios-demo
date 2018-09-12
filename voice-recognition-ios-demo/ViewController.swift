@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  VoiceRecognitionDemo
+//  voice-recognition-ios-demo
 //
 //  Created by Astemir Eleev on 21/08/16.
 //  Copyright © 2016 Astemir Eleev. All rights reserved.
@@ -11,9 +11,13 @@ import Speech
 
 class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
     
+    // MARK: - Outlets
+    
     @IBOutlet weak var timeRemaining: UIProgressView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var microphoneButton: UIButton!
+    
+    // MARK: - Properties
     
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "en-US"))!
     
@@ -21,8 +25,9 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     
-    
     private var timer: Timer?
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,13 +77,15 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
             // Swift 2.2 and objc
             //            NSRunLoop.currentRunLoop().addTimer(self.timer!, forMode: NSRunLoopCommonModes)
             // Swift 2.3 and 3.0
-            RunLoop.current.add(timer!, forMode: RunLoopMode.defaultRunLoopMode)
+            RunLoop.current.add(timer!, forMode: RunLoop.Mode.default)
             
             startRecording()
             startRecordingAudio()
             microphoneButton.setTitle("Stop Recording", for: .normal)
         }
     }
+    
+    // MARK: - Methods
     
     func startRecording() {
         
@@ -89,18 +96,15 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         
         let audioSession = AVAudioSession.sharedInstance()
         do {
-            try audioSession.setCategory(AVAudioSessionCategoryRecord)
-            try audioSession.setMode(AVAudioSessionModeMeasurement)
-            try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
+            try audioSession.setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.record)), mode: .default)
+            try audioSession.setMode(AVAudioSession.Mode.measurement)
+            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         } catch {
             print("audioSession properties weren't set because of an error.")
         }
         
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        
-        guard let inputNode = audioEngine.inputNode else {
-            fatalError("Audio engine has no input node")
-        }
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()        
+        let inputNode = audioEngine.inputNode
         
         guard let recognitionRequest = recognitionRequest else {
             fatalError("Unable to create an SFSpeechAudioBufferRecognitionRequest object")
@@ -169,7 +173,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
     // MARK: Util
 
     
-    func remainingTime() {
+    @objc func remainingTime() {
         print("progress: \(timeRemaining.progress)")
         timeRemaining.progress += 1.0  / 600.0
         
@@ -240,4 +244,9 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         }
     }
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }
