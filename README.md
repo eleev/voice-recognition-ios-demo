@@ -1,8 +1,13 @@
-# voice recognition demo
+# voice recognition [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+
+[![Language](https://img.shields.io/badge/language-Swift-orange.svg)]()
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
+
+**Last Update: 12/September/2018.**
 
 # ✍️ About 
 
-Small demo app for `voice recognition` feature introduced in `iOS 10.0 SDK` using `Speach` framework. 
+Small demo app for `voice recognition` feature introduced in `iOS 10.0 SDK` using `Speech` framework. 
 
 # 🌅 Pictures
 
