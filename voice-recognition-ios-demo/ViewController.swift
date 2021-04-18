@@ -9,7 +9,7 @@
 import UIKit
 import Speech
 
-class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
+final class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
     
     // MARK: - Outlets
     
@@ -38,24 +38,22 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         speechRecognizer.delegate = self
         
         SFSpeechRecognizer.requestAuthorization { (authStatus) in
-            
             var isButtonEnabled = false
             
             switch authStatus {
             case .authorized:
                 isButtonEnabled = true
-                
             case .denied:
                 isButtonEnabled = false
                 print("User denied access to speech recognition")
-                
             case .restricted:
                 isButtonEnabled = false
                 print("Speech recognition restricted on this device")
-                
             case .notDetermined:
                 isButtonEnabled = false
                 print("Speech recognition not yet authorized")
+            @unknown default:
+                fatalError("There is something wrong with authentication")
             }
             
             OperationQueue.main.addOperation() {
@@ -63,6 +61,8 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
             }
         }
     }
+    
+    // MARK: - Actions
     
     @IBAction func microphoneTapped(_ sender: AnyObject) {
         if audioEngine.isRunning {
@@ -86,6 +86,8 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
     }
     
     // MARK: - Methods
+    
+    // MARK: Playback
     
     func startRecording() {
         
@@ -170,9 +172,8 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         timeRemaining.progress = 0.0
     }
     
-    // MARK: Util
+    // MARK: - Utils
 
-    
     @objc func remainingTime() {
         print("progress: \(timeRemaining.progress)")
         timeRemaining.progress += 1.0  / 600.0
@@ -196,7 +197,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         #endif
     }
     
-    // MARK: Recording audio
+    // MARK: - Audio Recording
     
     var audioRecorder:AVAudioRecorder?
     
@@ -215,7 +216,9 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
             audioRecorder?.delegate = self
             audioRecorder?.record()
             
-//            recordButton.setTitle("Tap to Stop", for: .normal)
+            /*
+            recordButton.setTitle("Tap to Stop", for: .normal)
+             */
         } catch {
             finishRecordingAudio(success: false)
         }
@@ -227,11 +230,14 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecor
         
         if success {
             print("finishRecordingAudio: true")
-//            recordButton.setTitle("Tap to Re-record", for: .normal)
+            /*
+            recordButton.setTitle("Tap to Re-record", for: .normal)
+             */
         } else {
             print("finishRecordingAudio: false")
-//            recordButton.setTitle("Tap to Record", for: .normal)
-            // recording failed :(
+            /*
+            recordButton.setTitle("Tap to Record", for: .normal)
+             */
         }
     }
     
